@@ -1,0 +1,34 @@
+name: Bootstrap recruitment site
+
+on:
+  push:
+    paths:
+      - .github/workflows/bootstrap-site.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Unpack final site source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .site_bootstrap/archive.part.* > /tmp/site.tar.gz.b64
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          base64 -d /tmp/site.tar.gz.b64 > /tmp/site.tar.gz
+          tar -xzf /tmp/site.tar.gz -C .
+          rm -f .bootstrap
+          rm -rf .site_bootstrap
+          rm -f .github/workflows/bootstrap-site.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Deploy GF Baoding recruitment site" || exit 0
+          git push
