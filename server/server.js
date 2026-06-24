@@ -251,6 +251,9 @@ function createTransporter() {
     connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT_MS || 15000),
     greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT_MS || 15000),
     socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT_MS || 20000),
+    tls: {
+      servername: process.env.SMTP_TLS_SERVERNAME || process.env.SMTP_HOST
+    },
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
