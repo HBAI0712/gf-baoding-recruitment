@@ -20,6 +20,24 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          fixes = {
+              '.site_bootstrap/archive.part.03': (
+                  'jrEE3g7Ho9lVOAS04ByleO5ogQWmtw39wUyr/WVxg',
+                  'jrEE3g7Ho9lVOAS04BylWO5ogQWmtw39wUyr/WVxg',
+              ),
+              '.site_bootstrap/archive.part.04': (
+                  'NPnXFBYoLc0QGQYxArJYrytBUfF0vj76c/g',
+                  'NPnXFBYoLc0QGQYxArJYRytBUfF0vj76c/g',
+              ),
+          }
+          for file_name, (wrong, right) in fixes.items():
+              path = Path(file_name)
+              text = path.read_text()
+              if wrong in text:
+                  path.write_text(text.replace(wrong, right, 1))
+          PY
           cat .site_bootstrap/archive.part.* > /tmp/site.tar.gz.b64
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           base64 -d /tmp/site.tar.gz.b64 > /tmp/site.tar.gz
