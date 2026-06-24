@@ -247,6 +247,7 @@ function createTransporter() {
     port: Number(process.env.SMTP_PORT || 465),
     secure: String(process.env.SMTP_SECURE || "true") === "true",
     requireTLS: String(process.env.SMTP_REQUIRE_TLS || "false") === "true",
+    family: Number(process.env.SMTP_FAMILY || 0) || undefined,
     connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT_MS || 15000),
     greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT_MS || 15000),
     socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT_MS || 20000),
