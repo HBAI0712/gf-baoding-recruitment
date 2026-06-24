@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>招聘网页内容编辑器</title>
+    <style>
+      :root {
+        --blue: #0b2545;
+        --line: #d9e4f2;
+        --red: #df1f2d;
+        --soft: #f5f8fc;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: #172033;
+        background: #fbfdff;
+        font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        line-height: 1.6;
+      }
+
+      header {
+        padding: 28px 5vw;
+        color: #fff;
+        background: var(--blue);
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 34px;
+        letter-spacing: 0;
+      }
+
+      header p {
+        max-width: 780px;
+        margin: 10px 0 0;
+        color: #d7e2f2;
+      }
+
+      main {
+        width: min(1080px, 90vw);
+        margin: 0 auto;
+        padding: 34px 0 60px;
+      }
+
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        backdrop-filter: blur(12px);
+      }
+
+      button,
+      .link-button {
+        min-height: 42px;
+        padding: 0 14px;
+        color: #fff;
+        background: var(--red);
+        border: 0;
+        border-radius: 6px;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .link-button {
+        display: inline-flex;
+        align-items: center;
+        background: var(--blue);
+        text-decoration: none;
+      }
+
+      section {
+        margin-top: 24px;
+        padding: 22px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      h2 {
+        margin: 0 0 16px;
+        color: var(--blue);
+      }
+
+      label {
+        display: block;
+        margin: 12px 0 6px;
+        font-weight: 800;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #c7d5e8;
+        border-radius: 6px;
+        font: inherit;
+      }
+
+      textarea {
+        min-height: 92px;
+        resize: vertical;
+      }
+
+      .hint {
+        margin: 6px 0 0;
+        color: #667085;
+        font-size: 13px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .list-editor {
+        min-height: 140px;
+      }
+
+      .note {
+        padding: 14px 16px;
+        color: #334155;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .position-edit {
+        margin-top: 16px;
+        padding: 16px;
+        background: #fbfdff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .sub-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .ghost-button {
+        color: var(--blue);
+        background: #fff;
+        border: 1px solid var(--line);
+      }
+
+      .guide {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .guide-card {
+        padding: 16px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .guide-card strong {
+        display: block;
+        color: var(--red);
+        font-size: 18px;
+      }
+
+      .guide-card span {
+        display: block;
+        margin-top: 6px;
+        color: #475467;
+        font-size: 14px;
+      }
+
+      .status {
+        flex: 1 1 220px;
+        color: #237866;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .status.is-warning {
+        color: #9a3412;
+      }
+
+      .status.is-done {
+        color: #166534;
+      }
+
+      .warning {
+        margin-top: 14px;
+        padding: 12px 14px;
+        color: #7a2e0e;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      .field-help {
+        margin: 4px 0 0;
+        color: #667085;
+        font-size: 12px;
+      }
+
+      .required-mark {
+        color: var(--red);
+      }
+
+      @media (max-width: 760px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        header h1 {
+          font-size: 28px;
+        }
+
+        .guide {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>招聘网页内容编辑器</h1>
+      <p>不需要懂代码。按顺序改文字，点“保存并下载”，再把下载的新文件交给网站维护人员替换即可。</p>
+    </header>
+
+    <main>
+      <div class="toolbar">
+        <button id="downloadBtn" type="button">1 保存并下载内容文件</button>
+        <a class="link-button" href="./index.html" target="_blank" rel="noreferrer">2 打开招聘页预览</a>
+        <a class="link-button" href="./apply.html" target="_blank" rel="noreferrer">3 打开申请页预览</a>
+        <span class="status" id="statusText">改完后先保存，再预览。</span>
+      </div>
+
+      <div class="guide">
+        <div class="guide-card">
+          <strong>第一步：改内容</strong>
+          <span>只改输入框里的文字。不会写的地方可以先保留原文。</span>
+        </div>
+        <div class="guide-card">
+          <strong>第二步：保存下载</strong>
+          <span>点击红色按钮，会下载一个新的 site-data.js。</span>
+        </div>
+        <div class="guide-card">
+          <strong>第三步：替换上线</strong>
+          <span>把新 site-data.js 替换网站里的旧文件，刷新网页即可。</span>
+        </div>
+      </div>
+
+      <p class="warning">不要修改文件名。下载后的文件必须叫 <strong>site-data.js</strong>。正式发布前，岗位、福利和合规提示请再给负责人审核。</p>
+
+      <section>
+        <h2>基础信息</h2>
+        <div class="grid">
+          <div>
+            <label for="branchName">营业部名称 <span class="required-mark">*</span></label>
+            <input id="branchName" placeholder="例如：广发证券保定营业部" />
+            <p class="field-help">显示在页脚和部分页面标题里。</p>
+          </div>
+          <div>
+            <label for="campaignName">招募名称 <span class="required-mark">*</span></label>
+            <input id="campaignName" placeholder="例如：青年招募计划" />
+            <p class="field-help">显示在首页小标题里。</p>
+          </div>
+        </div>
+        <label for="heroTitle">首页标题</label>
+        <input id="heroTitle" placeholder="例如：广发证券保定营业部青年招募计划" />
+        <label for="heroSubtitle">首页副标题</label>
+        <input id="heroSubtitle" placeholder="例如：近北京，有视野；在保定，有舞台" />
+        <label for="heroLead">首页介绍</label>
+        <textarea id="heroLead" placeholder="用一小段话说明正在招聘什么岗位、适合什么样的人。"></textarea>
+        <label for="managerQuote">总经理金句</label>
+        <textarea id="managerQuote" placeholder="写一段代表营业部用人态度的话，不要用收益承诺或夸大表达。"></textarea>
+      </section>
+
+      <section>
+        <h2>联系方式</h2>
+        <div class="grid">
+          <div>
+            <label for="person">联系人 <span class="required-mark">*</span></label>
+            <input id="person" placeholder="例如：董美欣" />
+          </div>
+          <div>
+            <label for="phone">电话 <span class="required-mark">*</span></label>
+            <input id="phone" inputmode="tel" placeholder="例如：13785360887" />
+          </div>
+          <div>
+            <label for="email">邮箱 <span class="required-mark">*</span></label>
+            <input id="email" inputmode="email" placeholder="例如：380704292@qq.com" />
+          </div>
+          <div>
+            <label for="address">地址 <span class="required-mark">*</span></label>
+            <input id="address" placeholder="从省份开始写完整地址" />
+          </div>
+        </div>
+        <label for="note">投递备注</label>
+        <input id="note" placeholder="例如：简历命名建议：姓名+应聘方向+联系电话" />
+      </section>
+
+      <section>
+        <h2>列表内容</h2>
+        <label for="requirements">招聘要求</label>
+        <textarea id="requirements" class="list-editor"></textarea>
+        <p class="hint">一行一条。例如：已通过证券从业资格考试者优先</p>
+        <label for="benefits">福利待遇</label>
+        <textarea id="benefits" class="list-editor"></textarea>
+        <p class="hint">一行一条。例如：五险二金、企业年金、行业独享休市假（无调休）</p>
+      </section>
+
+      <section>
+        <h2>岗位方向</h2>
+        <div id="positionsEditor"></div>
+        <div class="sub-actions">
+          <button id="addPositionBtn" type="button">新增岗位</button>
+          <button id="removePositionBtn" type="button" class="ghost-button">删除最后一个岗位</button>
+        </div>
+        <p class="hint">岗位职责一行写一条。如果当前不招聘任何岗位，可以删除全部岗位，首页会自动显示“暂无在招岗位”。</p>
+      </section>
+
+      <section>
+        <h2>合规提示</h2>
+        <textarea id="complianceNote"></textarea>
+        <p class="note">岗位、补贴、福利等信息发布前建议再走公司合规和品牌审核。</p>
+      </section>
+    </main>
+
+    <script src="./site-data.js"></script>
+    <script>
+      const data = window.RECRUITMENT_SITE_DATA;
+      const statusText = document.getElementById("statusText");
+      const ids = [
+        "branchName",
+        "campaignName",
+        "heroTitle",
+        "heroSubtitle",
+        "heroLead",
+        "managerQuote",
+        "complianceNote"
+      ];
+
+      ids.forEach((id) => {
+        document.getElementById(id).value = data[id] || "";
+      });
+
+      ["person", "phone", "email", "address", "note"].forEach((id) => {
+        document.getElementById(id).value = (data.contact || {})[id] || "";
+      });
+
+      document.getElementById("requirements").value = (data.requirements || []).join("\n");
+      document.getElementById("benefits").value = (data.benefits || []).join("\n");
+
+      let positions = JSON.parse(JSON.stringify(data.positions || []));
+
+      function currentPositionsFromDom() {
+        return Array.from(document.querySelectorAll("#positionsEditor .position-edit")).map((box) => ({
+          title: box.querySelector('[data-key="title"]').value.trim(),
+          tag: box.querySelector('[data-key="tag"]').value.trim(),
+          intro: box.querySelector('[data-key="intro"]').value.trim(),
+          duties: box
+            .querySelector('[data-key="duties"]')
+            .value.split("\n")
+            .map((item) => item.trim())
+            .filter(Boolean)
+        }));
+      }
+
+      function renderPositions() {
+        const root = document.getElementById("positionsEditor");
+        root.innerHTML = "";
+        if (!positions.length) {
+          const empty = document.createElement("p");
+          empty.className = "note";
+          empty.textContent = "当前没有岗位。保存后，招聘首页会自动显示“当前暂无在招岗位”。";
+          root.appendChild(empty);
+          return;
+        }
+        positions.forEach((position, index) => {
+          const box = document.createElement("div");
+          box.className = "position-edit";
+          box.innerHTML = `
+            <h3>岗位 ${index + 1}</h3>
+            <div class="grid">
+              <div>
+                <label>岗位名称</label>
+                <input data-position="${index}" data-key="title" placeholder="例如：零售经理（新媒体方向）" />
+              </div>
+              <div>
+                <label>岗位标签</label>
+                <input data-position="${index}" data-key="tag" placeholder="例如：当前在招 / 重点招募" />
+              </div>
+            </div>
+            <label>岗位简介</label>
+            <textarea data-position="${index}" data-key="intro" placeholder="一句话说明这个岗位做什么、适合什么样的人。"></textarea>
+            <label>岗位职责</label>
+            <textarea data-position="${index}" data-key="duties" placeholder="一行写一条职责。"></textarea>
+            <p class="hint">一行一条职责。不要写收益承诺、客户资源承诺或夸大表达。</p>
+          `;
+          root.appendChild(box);
+          box.querySelector('[data-key="title"]').value = position.title || "";
+          box.querySelector('[data-key="tag"]').value = position.tag || "";
+          box.querySelector('[data-key="intro"]').value = position.intro || "";
+          box.querySelector('[data-key="duties"]').value = (position.duties || []).join("\n");
+        });
+      }
+
+      renderPositions();
+
+      document.getElementById("addPositionBtn").addEventListener("click", () => {
+        positions = currentPositionsFromDom();
+        positions.push({
+          title: "新的岗位方向",
+          tag: "招募中",
+          intro: "请填写岗位简介。",
+          duties: ["请填写岗位职责"]
+        });
+        renderPositions();
+        updateStatus("已新增一个岗位，记得补全岗位名称和职责。", "is-warning");
+      });
+
+      document.getElementById("removePositionBtn").addEventListener("click", () => {
+        positions = currentPositionsFromDom();
+        if (positions.length > 0) {
+          const ok = window.confirm("确定删除最后一个岗位吗？如果所有岗位都删除，首页会显示“当前暂无在招岗位”。");
+          if (!ok) return;
+          positions.pop();
+          renderPositions();
+          updateStatus(
+            positions.length ? "已删除最后一个岗位，保存后才会真正生效。" : "岗位已清空，保存后首页会显示暂无在招岗位。",
+            "is-warning"
+          );
+        }
+      });
+
+      function updateStatus(text, className) {
+        if (!statusText) return;
+        statusText.textContent = text;
+        statusText.classList.remove("is-warning", "is-done");
+        if (className) statusText.classList.add(className);
+      }
+
+      function lines(id) {
+        return document
+          .getElementById(id)
+          .value.split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+
+      function nextData() {
+        const next = { ...data };
+        ids.forEach((id) => {
+          next[id] = document.getElementById(id).value.trim();
+        });
+        next.contact = {
+          ...data.contact,
+          person: document.getElementById("person").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          address: document.getElementById("address").value.trim(),
+          note: document.getElementById("note").value.trim()
+        };
+        next.requirements = lines("requirements");
+        next.benefits = lines("benefits");
+        next.positions = currentPositionsFromDom();
+        return next;
+      }
+
+      document.getElementById("downloadBtn").addEventListener("click", () => {
+        const next = nextData();
+        const missing = [];
+        if (!next.branchName) missing.push("营业部名称");
+        if (!next.campaignName) missing.push("招募名称");
+        if (!next.contact.person) missing.push("联系人");
+        if (!/^1[3-9]\d{9}$/.test(String(next.contact.phone || "").replace(/\s/g, ""))) {
+          missing.push("正确的 11 位联系电话");
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(next.contact.email || ""))) {
+          missing.push("正确的邮箱");
+        }
+        if (!next.contact.address || !next.contact.address.startsWith("河北省")) {
+          missing.push("从河北省开始写的完整地址");
+        }
+
+        if (missing.length) {
+          updateStatus(`请先补全：${missing.join("、")}。`, "is-warning");
+          window.alert(`请先补全以下内容：\n${missing.join("\n")}`);
+          return;
+        }
+
+        const content =
+          "window.RECRUITMENT_SITE_DATA = " + JSON.stringify(next, null, 2) + ";\n";
+        const blob = new Blob([content], { type: "text/javascript;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "site-data.js";
+        a.click();
+        URL.revokeObjectURL(url);
+        updateStatus("已下载 site-data.js。下一步：替换网站里的同名文件，再刷新预览。", "is-done");
+        window.alert("保存成功：已下载 site-data.js。\n\n下一步：把这个新文件替换网站文件夹里的旧 site-data.js，然后刷新招聘页预览。");
+      });
+    </script>
+  </body>
+</html>

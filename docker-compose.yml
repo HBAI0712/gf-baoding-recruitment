@@ -1,0 +1,9 @@
+services:
+  gf-baoding-recruitment:
+    build: .
+    container_name: gf-baoding-recruitment
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    ports:
+      - "3000:3000"

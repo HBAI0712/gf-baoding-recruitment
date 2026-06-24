@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>广发证券保定营业部在线申请</title>
+    <meta
+      name="description"
+      content="广发证券保定营业部青年招募在线申请，填写联系方式并上传简历。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="apply-page">
+    <a class="skip-link" href="#applicationForm">跳到申请表单</a>
+    <div class="page-progress" aria-hidden="true"><span id="pageProgress"></span></div>
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="返回招聘首页">
+        <img class="brand-logo" src="https://cdn.gf.com.cn/marketing/static/images/gfw/common/svg/logo.svg" alt="广发证券 GF SECURITIES" />
+        <span class="brand-office">保定证券营业部</span>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="./index.html#positions">岗位</a>
+        <a href="./index.html#requirements">要求</a>
+        <a href="./index.html#benefits">福利</a>
+        <a href="./index.html">首页</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="apply-hero">
+        <div>
+          <p class="eyebrow">Online Application</p>
+          <h1>在线咨询与投递</h1>
+          <p class="hero-lead">
+            请填写基本信息并上传简历。提交后，系统会按“基本信息 / 应聘信息 / 简历附件”分类发送至招聘负责人邮箱。
+          </p>
+        </div>
+        <div class="apply-contact-card">
+          <span>招聘负责人</span>
+          <strong data-contact="person">董美欣</strong>
+          <a data-contact-link="phone" data-contact="phone"></a>
+          <a data-contact-link="email" data-contact="email"></a>
+        </div>
+      </section>
+
+      <section class="application-shell">
+        <form class="application-form" id="applicationForm">
+          <label class="bot-field" aria-hidden="true">
+            <span>公司网站</span>
+            <input name="companyWebsite" tabindex="-1" autocomplete="off" />
+          </label>
+
+          <div class="form-progress" aria-live="polite">
+            <div class="form-progress-copy">
+              <span>投递进度</span>
+              <strong id="formProgressText">申请信息待填写</strong>
+            </div>
+            <div class="form-progress-track" aria-hidden="true">
+              <span id="formProgressBar"></span>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <p class="form-kicker">01 · 基本信息</p>
+            <div class="form-grid">
+              <label>
+                <span>称谓 / 姓名 *</span>
+                <input name="applicantName" autocomplete="name" placeholder="例如：张先生 / 李女士" required />
+              </label>
+              <label>
+                <span>联系电话 *</span>
+                <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="请填写手机号码" required />
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <p class="form-kicker">02 · 应聘信息</p>
+            <div class="form-grid">
+              <label>
+                <span>应聘方向 *</span>
+                <select name="position" id="positionSelect" required>
+                  <option value="">请选择应聘方向</option>
+                </select>
+              </label>
+              <label>
+                <span>当前状态</span>
+                <select name="candidateStatus">
+                  <option value="应届/准应届">应届/准应届</option>
+                  <option value="已有工作经验">已有工作经验</option>
+                  <option value="考虑转行金融行业">考虑转行金融行业</option>
+                  <option value="其他">其他</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>补充说明</span>
+              <textarea name="message" rows="5" placeholder="可以简单介绍你的经历、证书、意向岗位或方便联系的时间。"></textarea>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <p class="form-kicker">03 · 上传简历</p>
+            <label class="upload-box" id="uploadBox">
+              <input name="resume" type="file" accept=".pdf,.doc,.docx" required />
+              <strong>点击上传简历文件</strong>
+              <span id="fileHint">支持 PDF / DOC / DOCX，建议不超过 12MB</span>
+            </label>
+          </div>
+
+          <label class="agree-line">
+            <input type="checkbox" required />
+            <span>我确认所填信息真实有效，并同意用于本次招聘联系与简历筛选。</span>
+          </label>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">提交申请</button>
+            <a class="btn btn-secondary" href="./index.html">返回招聘首页</a>
+          </div>
+
+          <p class="form-message" id="formMessage" role="status"></p>
+        </form>
+
+        <aside class="application-aside">
+          <h2>提交后会如何处理</h2>
+          <ol class="process-list">
+            <li>
+              <strong>信息分类</strong>
+              <span>系统将称谓、电话、应聘方向、补充说明归入邮件正文。</span>
+            </li>
+            <li>
+              <strong>简历附件</strong>
+              <span>简历文件会作为附件发送至招聘负责人邮箱。</span>
+            </li>
+            <li>
+              <strong>后续沟通</strong>
+              <span>招聘负责人根据岗位匹配情况进行电话或邮件沟通。</span>
+            </li>
+          </ol>
+          <p class="aside-note" data-field="complianceNote"></p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span data-field="branchName">广发证券保定营业部</span>
+      <span>在线申请</span>
+    </footer>
+
+    <script src="./site-data.js"></script>
+    <script src="./apply.js"></script>
+  </body>
+</html>
